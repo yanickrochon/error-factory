@@ -10,6 +10,38 @@ npm install error-factory
 ```
 
 
+## Usage
+
+
+### Simple Usage
+
+```javascript
+var CustomException = errorFactory('CustomException');
+
+try {
+  throw new CustomException('This is the error message');
+} catch (e) {
+  console.error(e.message);
+}
+```
+
+
+### Custom Error Arguments
+
+Errors may be generated with named arguments. However, the first argument
+should *always* be a message string.
+
+```javascript
+var CustomException = errorFactory('CustomException', [ 'message', 'context' ]);
+
+try {
+  throw new CustomException('This is the error message', { foo: 'bar' });
+} catch (e) {
+  console.error(e.message, e.context);
+}
+```
+
+
 ## Contribution
 
 All contributions welcome! Every PR **must** be accompanied by their associated
