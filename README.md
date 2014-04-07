@@ -10,6 +10,14 @@ npm install error-factory
 ```
 
 
+## Features
+
+* Proper `Error` inherited prototype function (aka Class)
+* Custom named error arguments
+* Error type caching
+* Namespaced errors
+
+
 ## Usage
 
 
@@ -39,6 +47,31 @@ try {
 } catch (e) {
   console.error(e.message, e.context);
 }
+```
+
+
+### Namespaced Errors
+
+```javascript
+var ArgumentException = errorFactory('ArgumentException');
+var MyArgumentException = errorFactory('my.ArgumentException');
+
+console.log(ArgumentException.name, MyArgumentException.name)
+// ArgumentException ArgumentException
+
+console.log(ArgumentException.fullName, MyArgumentException.fullName)
+// ArgumentException my.ArgumentException
+
+console.log(ArgumentException.name, MyArgumentException.name)
+
+console.log(ArgumentException.name === MyArgumentException.name);
+// true
+
+console.log(ArgumentException === MyArgumentException);
+// false
+
+console.log(ArgumentException === errorFactory('ArgumentException'));
+// true
 ```
 
 

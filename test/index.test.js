@@ -10,6 +10,20 @@ describe('Test custom error', function () {
     CustomError.name.should.equal('CustomError');
   });
 
+  it('should fail in invalid name', function () {
+    [
+      undefined, null, false, true,
+      0, 1,
+      '', ' name', '-', '!',
+      {}, [],
+      function () {}
+    ].forEach(function (invalidName) {
+      (function () {
+        errorFactory(invalidName);
+      }).should.throw();
+    });
+  });
+
   it('should have valid stack', function () {
     var ErrorWithStack = errorFactory('ErrorWithStack');
 
@@ -38,6 +52,21 @@ describe('Test custom error', function () {
     err.should.have.property('message').and.be.a.String.and.equal('Test message');
     err.should.have.property('context').and.be.a.String.and.equal('Some context');
     err.should.have.property('test').and.be.an.Object.and.equal(testObj);
+  });
+
+  it('should return namespaced errors', function () {
+    var ArgumentException = errorFactory('ArgumentException');
+    var MyArgumentException = errorFactory('my.ArgumentException');
+
+    ArgumentException.name.should.equal('ArgumentException');
+    MyArgumentException.name.should.equal('ArgumentException');
+
+    ArgumentException.fullName.should.equal('ArgumentException');
+    MyArgumentException.fullName.should.equal('my.ArgumentException');
+
+    ArgumentException.name.should.equal(MyArgumentException.name);
+    ArgumentException.should.not.equal(MyArgumentException);
+    ArgumentException.should.equal(errorFactory('ArgumentException'));
   });
 
 });
