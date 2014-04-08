@@ -16,6 +16,7 @@ npm install error-factory
 * Custom named error arguments
 * Error type caching
 * Namespaced errors
+* Optional usage of `new` (i.e. `throw CustomError('Foo');`)
 
 
 ## Usage
@@ -27,7 +28,7 @@ npm install error-factory
 var CustomException = errorFactory('CustomException');
 
 try {
-  throw new CustomException('This is the error message');
+  throw CustomException('This is the error message');
 } catch (e) {
   console.error(e.message);
 }
@@ -43,9 +44,34 @@ should *always* be a message string.
 var CustomException = errorFactory('CustomException', [ 'message', 'context' ]);
 
 try {
-  throw new CustomException('This is the error message', { foo: 'bar' });
+  throw CustomException('This is the error message', { foo: 'bar' });
 } catch (e) {
   console.error(e.message, e.context);
+}
+```
+
+
+### Custom Error Argument + default values
+
+Like the previous example, it may be possible to declare a new error type,
+specifying any `undefined` argument.
+
+A property will be set to the instance if
+
+* The named argument is not `undefined`
+* The named argument is `undefined` and the default value is not `undefined`
+
+```javascript
+var CustomException = errorFactory('CustomException', {
+  'message': undefined,  // named argument only, no default value
+  'context': false       // if no context is given, set property to false
+});
+
+try {
+  throw CustomException('Foo');
+} catch (e) {
+  console.error(e);
+  // { message: 'Foo', context: false }
 }
 ```
 

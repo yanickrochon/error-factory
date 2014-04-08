@@ -54,6 +54,35 @@ describe('Test custom error', function () {
     err.should.have.property('test').and.be.an.Object.and.equal(testObj);
   });
 
+  it('should provide custom default argument values', function () {
+    var ErrorWithArguments = errorFactory('ErrorWithArgsDefault', {
+      'str': undefined,
+      'obj': {},
+      'bool': false,
+      'nil': null,
+      'num': 123,
+      'str2': 'foo'
+    });
+
+    var err = new ErrorWithArguments();
+    err.should.be.an.Error;
+    assert.equal(err.str, undefined);
+    err.obj.should.be.an.Object.and.eql({});
+    assert.equal(err.bool, false);
+    assert.equal(err.nil, null);
+    assert.equal(err.num, 123);
+    err.str2.should.be.a.String.and.equal('foo');
+
+    err = ErrorWithArguments('Foo', null, true, false, 0, undefined);
+    err.should.be.an.Error;
+    err.str.should.be.a.String.and.equal('Foo')
+    assert.equal(err.obj, null);
+    err.bool.should.be.true;
+    err.nil.should.be.false;
+    err.num.should.be.a.Number.and.equal(0);
+    err.str2.should.be.a.String.and.equal('foo');
+  });
+
   it('should return namespaced errors', function () {
     var ArgumentException = errorFactory('ArgumentException');
     var MyArgumentException = errorFactory('my.ArgumentException');
@@ -80,6 +109,13 @@ describe('Test custom error', function () {
 
     TestError.should.equal(errorFactory('TestError'));
     TestError2.should.equal(errorFactory('namespace.TestError'));
+  });
+
+  it('should allow throw without new', function () {
+    var TestError = errorFactory('TestError');
+
+    TestError('Test').should.be.an.Error;
+    TestError('Test').message.should.equal('Test');
   });
 
 });
