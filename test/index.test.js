@@ -66,7 +66,20 @@ describe('Test custom error', function () {
 
     ArgumentException.name.should.equal(MyArgumentException.name);
     ArgumentException.should.not.equal(MyArgumentException);
-    ArgumentException.should.equal(errorFactory('ArgumentException'));
+  });
+
+  it('should validate cache', function () {
+    var TestError = errorFactory('TestError');
+    var TestError1 = errorFactory('TestError');
+    var TestError2 = errorFactory('namespace.TestError');
+
+    TestError.should.equal(TestError1);
+    TestError1.should.equal(TestError);
+    TestError.should.not.equal(TestError2);
+    TestError1.should.not.equal(TestError2);
+
+    TestError.should.equal(errorFactory('TestError'));
+    TestError2.should.equal(errorFactory('namespace.TestError'));
   });
 
 });

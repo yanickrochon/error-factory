@@ -62,8 +62,6 @@ console.log(ArgumentException.name, MyArgumentException.name)
 console.log(ArgumentException.fullName, MyArgumentException.fullName)
 // ArgumentException my.ArgumentException
 
-console.log(ArgumentException.name, MyArgumentException.name)
-
 console.log(ArgumentException.name === MyArgumentException.name);
 // true
 
