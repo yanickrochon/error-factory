@@ -90,8 +90,8 @@ describe('Test custom error', function () {
     ArgumentException.name.should.equal('ArgumentException');
     MyArgumentException.name.should.equal('ArgumentException');
 
-    ArgumentException.fullName.should.equal('ArgumentException');
-    MyArgumentException.fullName.should.equal('my.ArgumentException');
+    ArgumentException.canonicalName.should.equal('ArgumentException');
+    MyArgumentException.canonicalName.should.equal('my.ArgumentException');
 
     ArgumentException.name.should.equal(MyArgumentException.name);
     ArgumentException.should.not.equal(MyArgumentException);
@@ -116,6 +116,15 @@ describe('Test custom error', function () {
 
     TestError('Test').should.be.an.Error;
     TestError('Test').message.should.equal('Test');
+  });
+
+  it('should parse message template', function () {
+    var TestError = errorFactory('TestTemplateError', [ 'message', 'messageData' ]);
+
+    var e = new TestError('Foo {{bar}}', { bar: 'Hello' });
+
+    e.message.should.equal('Foo Hello');
+    e._message.should.equal('Foo {{bar}}');
   });
 
 });

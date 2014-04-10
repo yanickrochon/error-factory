@@ -17,6 +17,7 @@ npm install error-factory
 * Error type caching
 * Namespaced errors
 * Optional usage of `new` (i.e. `throw CustomError('Foo');`)
+* Template based error messages
 
 
 ## Usage
@@ -73,6 +74,29 @@ try {
   console.error(e);
   // { message: 'Foo', context: false }
 }
+```
+
+
+### Parameterized error messages
+
+All errors messages are processed for parameters. This allows errors to be
+internationalized, if necessary, without referse engineering the original message.
+This feature does not affect normal error behaviour.
+
+To enable this feature, custom error instances must set `this.messageData` with
+an object to replace parameters in the message. This can be done manually, or
+by using custom error arguments.
+
+```javascript
+var ArgumentException = errorFactory('ArgumentException', [ 'message', 'messageData' ]);
+
+var e = new ArgumentException('Invalid argument `{{arg}}`', { arg: 'foo' });
+
+console.log(e.message);
+// Invalid argument `foo`
+
+console.log(e._message);
+// Invalid argument `{{arg}}`
 ```
 
 
