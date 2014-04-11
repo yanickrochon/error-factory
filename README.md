@@ -80,7 +80,7 @@ try {
 ### Parameterized error messages
 
 All errors messages are processed for parameters. This allows errors to be
-internationalized, if necessary, without referse engineering the original message.
+internationalized, if necessary, without reverse engineering the original message.
 This feature does not affect normal error behaviour.
 
 To enable this feature, custom error instances must set `this.messageData` with
@@ -97,10 +97,30 @@ console.log(e.message);
 
 console.log(e._message);
 // Invalid argument `{{arg}}`
+
+// modify arguments
+e.messageData.arg = 'bar';
+
+console.log(e.message);
+// Invalid argument `bar`
+
+// localize... for example
+e._message = translator(e._message, 'fr');
+
+console.log(e.message);
+// Argument non valide `bar`
 ```
+
+**NOTE**: the stack trace is built when the `Error` instance is created. Therefore,
+modifying `messageData` or `_message` will not modify the stack trace output for now.
 
 
 ### Namespaced Errors
+
+Because errors are cached, projects should use namespaced errors to avoid mistakenly
+returning an error already defined somewhere else, with possibly different parameters,
+etc. As a rule of thumb, non-namespaced errors should not define named arguments, or
+use message templates, and should be reserved as low-level error types only.
 
 ```javascript
 var ArgumentException = errorFactory('ArgumentException');
