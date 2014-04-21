@@ -25,5 +25,9 @@
     "semicov": "^0.1.1-2",
     "should": "^3.2.0",
     "mocha": "^1.18.2"
+  },
+  "dependencies": {
+    "semicov": "^0.1.1",
+    "should": "^3.3.1"
   }
 }
