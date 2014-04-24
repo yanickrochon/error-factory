@@ -1,6 +1,6 @@
 {
   "name": "error-factory",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Generate valid custom error and exception classes for Node.js.",
   "main": "index.js",
   "scripts": {
@@ -25,9 +25,5 @@
     "semicov": "^0.1.1-2",
     "should": "^3.2.0",
     "mocha": "^1.18.2"
-  },
-  "dependencies": {
-    "semicov": "^0.1.1",
-    "should": "^3.3.1"
   }
 }
