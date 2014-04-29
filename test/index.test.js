@@ -125,6 +125,8 @@ describe('Test custom error', function () {
 
     e.message.should.equal('Foo Hello');
     e._message.should.equal('Foo {{bar}}');
+
+    e.stack.indexOf('TestTemplateError: Foo Hello').should.equal(0);
   });
 
   it('should not allow invalid named arguments', function () {
