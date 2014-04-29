@@ -1,5 +1,9 @@
 # Node Error Factory
 
+[![Build Status](https://travis-ci.org/yanickrochon/error-factory.png)](https://travis-ci.org/yanickrochon/error-factory)
+
+[![NPM](https://nodei.co/npm/error-factory.png?compact=true)](https://nodei.co/npm/error-factory/)
+
 Generate valid custom error and exception classes for Node.js.
 
 
