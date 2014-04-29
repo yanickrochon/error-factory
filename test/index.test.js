@@ -18,9 +18,9 @@ describe('Test custom error', function () {
       {}, [],
       function () {}
     ].forEach(function (invalidName) {
-      (function () {
+      +function () {
         errorFactory(invalidName);
-      }).should.throw();
+      }.should.throw();
     });
   });
 
@@ -125,6 +125,17 @@ describe('Test custom error', function () {
 
     e.message.should.equal('Foo Hello');
     e._message.should.equal('Foo {{bar}}');
+  });
+
+  it('should not allow invalid named arguments', function () {
+    [
+      [ 'while (true);' ],
+      [ 123 ],
+      { foo: undefined, '123': true },
+      { bar: null, 'console.log(false);': true }
+    ].forEach(function (options, index) {
+      +function () { errorFactory('TestInvalidNamedArgs' + index, options); }.should.throw();
+    });
   });
 
 });
