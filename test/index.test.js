@@ -138,4 +138,11 @@ describe('Test custom error', function () {
     });
   });
 
+  it('should have a clean stack trace', function () {
+    var TestError = errorFactory('TestCleanStackTrace');
+    var err = TestError();
+
+    err.stack.indexOf('eval').should.be.equal(-1);
+  });
+
 });
