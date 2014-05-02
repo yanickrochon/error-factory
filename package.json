@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/yanickrochon/error-factory",
   "devDependencies": {
-    "semicov": "^0.1.1",
-    "should": "^3.2.0",
+    "semicov": "^0.1.1-2",
+    "should": "^3.3.1",
     "mocha": "^1.18.2"
   }
 }
