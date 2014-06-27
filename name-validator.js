@@ -2,7 +2,9 @@
 Model/Type Name validator
 */
 
-const TYPE_NAME_REGEX = new RegExp('^(?!(?:do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)$)'
+const TYPE_NAME_REGEX = new RegExp('^(?!(?:do|if|in|for|let|new|try|var|case|else|enum|eval|false|null|this|true|void|'
+  + 'with|break|catch|class|const|super|throw|while|yield|delete|export|import|public|return|static|switch|typeof|default|'
+  + 'extends|finally|package|private|continue|debugger|function|arguments|interface|protected|implements|instanceof)$)'
   + '[$A-Z\_a-z\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\u02ee\u0370-\u0374'
   + '\u0376\u0377\u037a-\u037d\u0386\u0388-\u038a\u038c\u038e-\u03a1\u03a3-\u03f5\u03f7-\u0481\u048a-\u0527'
   + '\u0531-\u0556\u0559\u0561-\u0587\u05d0-\u05ea\u05f0-\u05f2\u0620-\u064a\u066e\u066f\u0671-\u06d3\u06d5'

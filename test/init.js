@@ -6,7 +6,7 @@ if (!process.env.TRAVIS) {
     });
   }
 
-  require('semicov').init('lib');
+  require('semicov').init('index.js');
 }
 
 // setting globals

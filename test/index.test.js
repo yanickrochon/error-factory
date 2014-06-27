@@ -5,16 +5,19 @@ describe('Test custom error', function () {
 
   it('should create custom errors', function () {
     var CustomError = errorFactory('CustomError');
+    var err = new CustomError('test');
 
     CustomError.should.be.a.Function;
     CustomError.name.should.equal('CustomError');
+
+    err.should.be.instanceof(CustomError);
   });
 
   it('should fail in invalid name', function () {
     [
       undefined, null, false, true,
       0, 1,
-      '', ' name', '-', '!',
+      '', ' name', '-', '!', 'while',
       {}, [],
       function () {}
     ].forEach(function (invalidName) {
@@ -22,6 +25,15 @@ describe('Test custom error', function () {
         errorFactory(invalidName);
       }.should.throw();
     });
+  });
+
+  it('should not redefine original Error', function () {
+    var OldError = Error;
+    var Error2 = errorFactory('Error');
+
+    OldError.should.equal(Error);
+    Error.should.not.equal(Error2);
+    OldError.should.not.equal(Error2);
   });
 
   it('should have valid stack', function () {
@@ -118,7 +130,7 @@ describe('Test custom error', function () {
     TestError('Test').message.should.equal('Test');
   });
 
-  it('should parse message template', function () {
+  it('should parse message template (w/o stack)', function () {
     var TestError = errorFactory('TestTemplateError', [ 'message', 'messageData' ]);
 
     var e = new TestError('Foo {{bar}}', { bar: 'Hello' });
@@ -127,14 +139,45 @@ describe('Test custom error', function () {
     e._message.should.equal('Foo {{bar}}');
 
     e.stack.indexOf('TestTemplateError: Foo Hello').should.equal(0);
+
+    e.message = 'Bar {{bar}}';
+
+    e.message.should.equal('Bar Hello');
+    e._message.should.equal('Bar {{bar}}');
+
+    e.stack.indexOf('TestTemplateError: Foo Hello').should.equal(0);
+  });
+
+  it('should parse message template (w/ stack)', function () {
+    var TestError = errorFactory('TestTemplateError', [ 'message', 'messageData' ]);
+    var e = new TestError('Foo {{bar}}', { bar: 'Hello' });
+
+    errorFactory.autoUpdateStack.should.be.false;
+    errorFactory.autoUpdateStack = true;
+    errorFactory.autoUpdateStack.should.be.true;
+
+    e.message.should.equal('Foo Hello');
+    e._message.should.equal('Foo {{bar}}');
+
+    e.stack.indexOf('TestTemplateError: Foo Hello').should.equal(0);
+
+    e.message = 'Bar {{bar}}';
+
+    e.message.should.equal('Bar Hello');
+    e._message.should.equal('Bar {{bar}}');
+
+    e.stack.indexOf('TestTemplateError: Bar Hello').should.equal(0);
   });
 
   it('should not allow invalid named arguments', function () {
+    // NOTE : "var a = { undefined: undefined };" is valid!
     [
       [ 'while (true);' ],
       [ 123 ],
       { foo: undefined, '123': true },
-      { bar: null, 'console.log(false);': true }
+      { bar: null, 'console.log(false)': true },
+      { 'false': true },
+      { 'if(true)process.exit()': true }
     ].forEach(function (options, index) {
       +function () { errorFactory('TestInvalidNamedArgs' + index, options); }.should.throw();
     });

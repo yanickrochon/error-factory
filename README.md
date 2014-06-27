@@ -1,6 +1,6 @@
 # Node Error Factory
 
-[![Build Status](https://travis-ci.org/yanickrochon/error-factory.png)](https://travis-ci.org/yanickrochon/error-factory)
+[![Build Status](https://travis-ci.org/yanickrochon/error-factory.svg)](https://travis-ci.org/yanickrochon/error-factory)
 
 [![NPM](https://nodei.co/npm/error-factory.png?compact=true)](https://nodei.co/npm/error-factory/)
 
@@ -29,13 +29,23 @@ npm install error-factory
 
 ### Simple Usage
 
+Error types created by `error-factory` can easily be thrown and compared by the
+program's logic.
+
 ```javascript
+var errorFactory = require('error-factory');
+
 var CustomException = errorFactory('CustomException');
 
 try {
   throw CustomException('This is the error message');
 } catch (e) {
-  console.error(e.message);
+
+  if (e instanceof CustomException) {
+    console.log('Custom error was thrown!');
+  } else {
+    console.error(e.message);  // <-- will never get executed
+  }
 }
 ```
 
@@ -46,6 +56,8 @@ Errors may be generated with named arguments. However, the first argument
 should *always* be a message string.
 
 ```javascript
+var errorFactory = require('error-factory');
+
 var CustomException = errorFactory('CustomException', [ 'message', 'context' ]);
 
 try {
@@ -67,6 +79,8 @@ A property will be set to the instance if
 * The named argument is `undefined` and the default value is not `undefined`
 
 ```javascript
+var errorFactory = require('error-factory');
+
 var CustomException = errorFactory('CustomException', {
   'message': undefined,  // named argument only, no default value
   'context': false       // if no context is given, set property to false
@@ -92,9 +106,11 @@ an object to replace parameters in the message. This can be done manually, or
 by using custom error arguments.
 
 ```javascript
+var errorFactory = require('error-factory');
+
 var ArgumentException = errorFactory('ArgumentException', [ 'message', 'messageData' ]);
 
-var e = new ArgumentException('Invalid argument `{{arg}}`', { arg: 'foo' });
+var e = ArgumentException('Invalid argument `{{arg}}`', { arg: 'foo' });
 
 console.log(e.message);
 // Invalid argument `foo`
@@ -115,8 +131,34 @@ console.log(e.message);
 // Argument non valide `bar`
 ```
 
-**NOTE**: the stack trace is built when the `Error` instance is created. Therefore,
-modifying `messageData` or `_message` will not modify the stack trace output for now.
+
+### Stack Trace
+
+The stack trace is generated when instanciating the `Error` instance, thus it will
+not update by default when modifying the error message. However, it is possible
+to auto update it with an experimental feature.
+
+```javascript
+var errorFactory = require('error-factory');
+
+var TestError = errorFactory('TestError', [ 'message', 'messageData' ]);
+
+// Enable auto update stack
+errorFactory.autoUpdateStack = true;
+
+var e = TestError('Test `{{arg}}`', { arg: 'foo' });
+
+e.stack;
+// -> TestError: Test `foo` ...
+
+e.message = 'Changed `{{arg}}`';
+
+e.stack;
+// -> TestError: Changed `foo` ...
+```
+
+**!!WARNING!!** : this feature is experimental and should not be tempered with during
+program execution, or results and behaviour will be undefined.
 
 
 ### Namespaced Errors
@@ -127,6 +169,8 @@ etc. As a rule of thumb, non-namespaced errors should not define named arguments
 use message templates, and should be reserved as low-level error types only.
 
 ```javascript
+var errorFactory = require('error-factory');
+
 var ArgumentException = errorFactory('ArgumentException');
 var MyArgumentException = errorFactory('my.ArgumentException');
 
