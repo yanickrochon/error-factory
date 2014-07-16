@@ -6,7 +6,14 @@ Module Error Factory
 const ERR_MSG_TOKENS = /\{\{([^\}]+)\}\}/g;
 
 var util = require('util');
-var nameValid = require('./name-validator');
+var varValidator = require('var-validator');
+
+var varValidatorOptions = {
+  enableScope: true,
+  enableBrackets: false,
+  allowLowerCase: true,
+  allowUpperCase: true
+};
 
 /**
 Error cache
@@ -56,7 +63,7 @@ function errorFactory(name, namedArgs) {
     throw new Error('Empty error name');
   } else if (typeof name !== 'string') {
     throw new Error('Error name must be a string');
-  } else if (!nameValid(name)) {
+  } else if (!varValidator.isValid(name, varValidatorOptions)) {
     throw new Error('Invalid error name `' + name + '`');
   }
 
@@ -71,7 +78,7 @@ function errorFactory(name, namedArgs) {
     customProperties = [];
 
     for (var i = 0, len = namedArgs.length; i < len; ++i) {
-      if (nameValid(namedArgs[i])) {
+      if (varValidator.isValid(namedArgs[i], varValidatorOptions)) {
         argList.push(namedArgs[i]);
         customProperties.push('(' + namedArgs[i] + ' !== undefined) && (this.' + namedArgs[i] + ' = ' + namedArgs[i] + ');');
       } else {
@@ -86,7 +93,7 @@ function errorFactory(name, namedArgs) {
 
     for (var i = 0, len = keys.length; i < len; ++i) {
       key = keys[i];
-      if (nameValid(key)) {
+      if (varValidator.isValid(key, varValidatorOptions)) {
         argList.push(key);
         if (namedArgs[key] === undefined) {
           customProperties.push('(' + key + ' !== undefined) && (this.' + key + ' = ' + key + ');');
