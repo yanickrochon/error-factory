@@ -103,7 +103,7 @@ For any case where error properties should be fine tuned, one can provide the pr
 var errorFactory = require('error-factory');
 
 var CustomException = errorFactory('CustomException', {
-  'message': èrrorFactory.ErrorProperty({
+  'message': errorFactory.ErrorProperty({
     writable: false
   })
 });
