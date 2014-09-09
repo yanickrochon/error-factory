@@ -52,6 +52,7 @@ describe('Test custom error', function () {
 
     err.should.be.an.Error;
     err.message.should.be.a.String.and.equal('Hello test error!');
+    err._message.should.be.a.String.and.equal('Hello test error!');
   });
 
   it('should provide custom arguments', function () {
@@ -169,6 +170,23 @@ describe('Test custom error', function () {
     e.stack.indexOf('TestTemplateError: Bar Hello').should.equal(0);
   });
 
+  it('should ignore missing message template tokens', function () {
+    var TestError = errorFactory('TestTemplateMissingTokenError', [ 'message', 'messageData' ]);
+    var e = new TestError('Foo {{bar}}', { foo: 'Hello' });
+
+    e.message.should.equal('Foo {{bar}}');
+    e._message.should.equal('Foo {{bar}}');
+  });
+
+  it('should fallback to error class name on empty message', function () {
+    var TestError = errorFactory('TestTemplateMissingMessageError');
+    var e = new TestError('Hello world!');
+
+    e.message.should.equal('Hello world!');
+    e._message = false;
+    e.message.should.equal('TestTemplateMissingMessageError');
+  });
+
   it('should not allow invalid named arguments', function () {
     // NOTE : "var a = { undefined: undefined };" is valid!
     [
@@ -177,7 +195,9 @@ describe('Test custom error', function () {
       { foo: undefined, '123': true },
       { bar: null, 'console.log(false)': true },
       { 'false': true },
-      { 'if(true)process.exit()': true }
+      { 'if(true)process.exit()': true },
+      { '_message': 'Hello!' },
+      { 'stack': [] }
     ].forEach(function (options, index) {
       +function () { errorFactory('TestInvalidNamedArgs' + index, options); }.should.throw();
     });
@@ -188,6 +208,87 @@ describe('Test custom error', function () {
     var err = TestError();
 
     err.stack.indexOf('eval').should.be.equal(-1);
+  });
+
+
+  describe('Test ErrorProperty', function () {
+
+    it('should fail with invalid property description', function () {
+      [
+        void 0, null,
+        undefined, true, false,
+        -1, 0, 1,
+        '', 'abc',
+        [], /./,
+        function () {}
+      ].forEach(function (description) {
+        +function () { errorFactory.ErrorProperty(description); }.should.throw();
+      });
+    });
+
+    it('should create a property without argument', function () {
+      var TestError = errorFactory('TestErrorPropertyNoArgument', {
+        'propExplicit': errorFactory.ErrorProperty({
+          value: 'explicit'
+        }, false),
+        'propImplicit': errorFactory.ErrorProperty({
+          value: 'implicit'
+        })
+      });
+
+      var err = TestError();
+
+      TestError.length.should.equal(1);
+      TestError.toString().should.startWith('function TestErrorPropertyNoArgument(message)');
+      err.propExplicit.should.equal('explicit');
+      err.propImplicit.should.equal('implicit');
+    });
+
+    it('should create a readonly property with argument', function () {
+      var TestError = errorFactory('TestErrorPropertyWithArgument', {
+        'propArg': errorFactory.ErrorProperty({
+          writable: false,
+          value: 'arg'
+        }, true),
+        'propNoArg': errorFactory.ErrorProperty({
+          value: 'no arg'
+        })
+      });
+
+      var err = TestError();
+
+      TestError.length.should.equal(1);
+      err.propArg.should.equal('arg');
+      err.propNoArg.should.equal('no arg');
+
+      +function () { 'use strict'; err.propArg = 'will throw!'; }.should.throw();
+      err.propArg.should.equal('arg');
+
+      // specify arg
+      err = TestError('test');
+
+      err.propArg.should.equal('test');
+      err.propNoArg.should.equal('no arg');
+
+      +function () { 'use strict'; err.propArg = 'will throw!'; }.should.throw();
+      err.propArg.should.equal('test');
+
+    });
+
+    it('should create a readonly error message', function () {
+      var TestError = errorFactory('TestErrorPropertyReadonlyMessage', {
+        message: errorFactory.ErrorProperty({
+          writable: false
+        })
+      });
+
+      var err = TestError('Test message');
+
+      err.message.should.equal('Test message');
+      +function () { 'use strict'; err.message = 'will throw!'; }.should.throw();
+      err.message.should.equal('Test message');
+    });
+
   });
 
 });

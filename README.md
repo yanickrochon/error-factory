@@ -95,6 +95,30 @@ try {
 ```
 
 
+### Custom Error Arguments with description
+
+For any case where error properties should be fine tuned, one can provide the property's defined description that will be passed to `Object.defineProperty`.
+
+```javascript
+var errorFactory = require('error-factory');
+
+var CustomException = errorFactory('CustomException', {
+  'message': èrrorFactory.ErrorProperty({
+    writable: false
+  })
+});
+
+try {
+  throw CustomException('This is my message');
+} catch (e) {
+  // the following line will NOT change the error message
+  // and will throw a TypeError in strict mode.
+  e.message = 'foo';
+}
+
+```
+
+
 ### Parameterized error messages
 
 All errors messages are processed for parameters. This allows errors to be
