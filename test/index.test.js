@@ -11,6 +11,7 @@ describe('Test custom error', function () {
     CustomError.name.should.equal('CustomError');
 
     err.should.be.instanceof(CustomError);
+    err.should.be.instanceof(Error);
   });
 
   it('should fail in invalid name', function () {
@@ -288,6 +289,41 @@ describe('Test custom error', function () {
       +function () { 'use strict'; err.message = 'will throw!'; }.should.throw();
       err.message.should.equal('Test message');
     });
+
+  });
+
+
+  describe('Extending Error types', function () {
+
+    it('should be valid with other error types', function () {
+      var TestError = errorFactory('TestExtendBase', {
+        'a': 'a',
+        't': 't',
+        'c': 'c',
+        'x': 'x',
+        'y': 'y',
+        'z': 'z'
+      });
+      var TestErrorExt = errorFactory('TestExtendExtended', ['z', 'b', 'c', 'd'], TestError);
+
+      var err = TestErrorExt(1, 2, 3, 4, 5, 6);
+
+      err.should.be.instanceof(TestError);
+      err.should.be.instanceof(TestErrorExt);
+
+      err.should.have.property('a').and.be.equal('a');
+      err.should.have.property('b').and.be.equal(2);
+      err.should.have.property('c').and.be.equal(3);
+      err.should.have.property('d').and.be.equal(4);
+      err.should.have.property('t').and.be.equal('t');
+      err.should.have.property('x').and.be.equal('x');
+      err.should.have.property('y').and.be.equal('y');
+      err.should.have.property('z').and.be.equal(1);
+    });
+
+    it('should not be valid without error type'/*, function () {
+
+    }*/);
 
   });
 

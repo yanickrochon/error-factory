@@ -1,6 +1,7 @@
 # Node Error Factory
 
 [![Build Status](https://travis-ci.org/yanickrochon/error-factory.svg)](https://travis-ci.org/yanickrochon/error-factory)
+[![Coverage Status](https://coveralls.io/repos/yanickrochon/error-factory/badge.svg)](https://coveralls.io/r/yanickrochon/error-factory)
 
 [![NPM](https://nodei.co/npm/error-factory.png?compact=true)](https://nodei.co/npm/error-factory/)
 
