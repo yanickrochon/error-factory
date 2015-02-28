@@ -77,7 +77,7 @@ function errorFactory(name, config, baseType) {
     throw new Error('Error name must be a string');
   } else if (!varValidator.isValid(name, varValidatorOptions)) {
     throw new Error('Invalid error name `' + name + '`');
-  } else if (baseType && !(baseType === Error || baseType.prototype instanceof Error)) {
+  } else if ((arguments.length > 2) && !(baseType && (baseType === Error || baseType.prototype instanceof Error))) {
     throw new Error('Invalid base type `' + baseType + '`');
   }
 
@@ -123,12 +123,12 @@ function errorFactory(name, config, baseType) {
   fnArgs = 'definedProperties,stackTraceCleanup' +
            (baseType ? (',' + baseType.name) : '');
 
-  fnBody = 'return function ' + typeName + '(' + argList.join(', ') + '){' +
+  fnBody = 'return function ' + typeName + '(' + argList.join(',') + '){' +
     'if(!(this instanceof ' + typeName + ')){' +
-      'return new ' + typeName + '(' + argList.join(', ') + ');' +
+      'return new ' + typeName + '(' + argList.join(',') + ');' +
     '}' +
     customProperties +
-    'this._message=this.message||"' + typeName + '";' +
+    'this._message=this._message||this.message||"' + typeName + '";' +
     (baseType
       ? buildSuperConstructorCall(baseType, argList)
       : 'Error.apply(this,arguments);' +
@@ -212,7 +212,9 @@ function buildSuperConstructorCall(base, args) {
     return (args.indexOf(arg) > -1) ? arg : undef;
   });
 
-  while (baseArgs[baseArgs.length - 1] === undef && baseArgs.pop());
+  while (baseArgs.length && baseArgs[baseArgs.length - 1] === undef) {
+    baseArgs.pop();
+  }
 
   return base.name + '.call(this,' + baseArgs.join(',') + ');';
 }

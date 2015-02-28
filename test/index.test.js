@@ -321,9 +321,17 @@ describe('Test custom error', function () {
       err.should.have.property('z').and.be.equal(1);
     });
 
-    it('should not be valid without error type'/*, function () {
-
-    }*/);
+    it('should be invalid with invalid error type', function () {
+      [
+        undefined, null, false, true, 0,
+        function () {}, function Error() {}, {}, [], /./,
+        '', 'Error'
+      ].forEach(function (invalidType, index) {
+        (function () {
+          errorFactory('TestExtendExtendedInvalid' + index, [], invalidType);
+        }).should.throw();
+      });
+    });
 
   });
 
