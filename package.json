@@ -1,6 +1,6 @@
 {
   "name": "error-factory",
-  "version": "0.1.5-dev",
+  "version": "0.1.5",
   "description": "Generate valid custom error and exception classes for Node.js.",
   "main": "index.js",
   "scripts": {

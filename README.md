@@ -27,6 +27,10 @@ npm install error-factory
 
 ## Usage
 
+```
+error-factory( type:String [, null|options:Object [, baseType:Constructor]] )
+```
+
 
 ### Simple Usage
 
@@ -213,6 +217,21 @@ console.log(ArgumentException === MyArgumentException);
 
 console.log(ArgumentException === errorFactory('ArgumentException'));
 // true
+```
+
+
+## Inheritance
+
+By default, all custom errors are `instanceof Error`. To subclass another custom error type, simply pass the desired type as third argument.
+
+```
+var CustomErrorBase = errorFactory('CustomErrorBase');
+var CustomError = errorFactory('CustomError', ..., CustomErrorBase);
+
+var err = CustomError('Error message');
+
+err instanceof Error;      // => true
+err instanceof ErrorBase;  // => true
 ```
 
 
