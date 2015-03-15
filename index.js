@@ -64,7 +64,6 @@ function errorFactory(name, config, baseType) {
   var keys;
   var key;
   var argList = [];
-  var superConstructor;
   var customProperties = '';
   var definedProperties;
   var fnArgs;

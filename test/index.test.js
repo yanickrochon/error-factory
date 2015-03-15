@@ -1,9 +1,13 @@
 
-var errorFactory = require('../');
 
 describe('Test custom error', function () {
 
+  var errorFactory = require('../');
+
+
   it('should create custom errors', function () {
+    var util = require('util');
+
     var CustomError = errorFactory('CustomError');
     var err = new CustomError('test');
 
@@ -12,6 +16,9 @@ describe('Test custom error', function () {
 
     err.should.be.instanceof(CustomError);
     err.should.be.instanceof(Error);
+
+    util.isError(err).should.be.true;
+    Error.prototype.isPrototypeOf(err).should.be.true;
   });
 
   it('should fail in invalid name', function () {
@@ -296,6 +303,7 @@ describe('Test custom error', function () {
   describe('Extending Error types', function () {
 
     it('should be valid with other error types', function () {
+      var util = require('util');
       var TestError = errorFactory('TestExtendBase', {
         'a': 'a',
         't': 't',
@@ -310,6 +318,9 @@ describe('Test custom error', function () {
 
       err.should.be.instanceof(TestError);
       err.should.be.instanceof(TestErrorExt);
+
+      util.isError(err).should.be.true;
+      Error.prototype.isPrototypeOf(err).should.be.true;
 
       err.should.have.property('a').and.be.equal('a');
       err.should.have.property('b').and.be.equal(2);
