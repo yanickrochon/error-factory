@@ -76,7 +76,7 @@ function errorFactory(name, config, baseType) {
     throw new Error('Error name must be a string');
   } else if (!varValidator.isValid(name, varValidatorOptions)) {
     throw new Error('Invalid error name `' + name + '`');
-  } else if ((arguments.length > 2) && !(baseType && (baseType === Error || baseType.prototype instanceof Error))) {
+  } else if (baseType != null && !(baseType === Error || baseType.prototype instanceof Error)) {
     throw new Error('Invalid base type `' + baseType + '`');
   }
 
