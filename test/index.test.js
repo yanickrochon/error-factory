@@ -334,7 +334,7 @@ describe('Test custom error', function () {
 
     it('should be invalid with invalid error type', function () {
       [
-        undefined, null, false, true, 0,
+        false, true, 0,
         function () {}, function Error() {}, {}, [], /./,
         '', 'Error'
       ].forEach(function (invalidType, index) {
